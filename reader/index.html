@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Screen Page</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Initial page-->
+    <div id="homepage">
+      <h2>Join a poll</h2>
+      <form id="join-form">
+        <input
+          required
+          id="join-poll-topic"
+          type="text"
+          placeholder="Enter space ID"
+        />
+        <button type="submit" id="joinPoll">Join a poll</button>
+      </form>
+    </div>
+    
+<!-- Loading page-->
+      <div id="loading" class="hidden">Loading...</div>
+      
+<!-- The creator adds the question and the answers-->
+      <div id="questions" class="hidden">
+        <form id="question-form">
+          <input
+            id="question"
+            placeholder="Enter a question"
+          />
+          </form>  
+      <form id="answer-form">
+        <label for="ans1">First Answer:</label><br>
+        <input type="text" id="ans1" name="ans1"><br>
+        <label for="ans2">Second Answer:</label><br>
+        <input type="text" id="ans2" name="ans2">
+        <label for="ans3">Third Answer:</label><br>
+        <input type="text" id="ans3" name="ans3">
+        <label for="ans4">Fourth Answer:</label><br>
+        <input type="text" id="ans4" name="ans4">
+      </form>
+      <button type="button" id="save-answer">Save</button>
+
+      </div>
+      <div id="info-container">
+        <div>Topic: <span id="chat-room-topic"></span></div>
+        <div>Peers: <span id="peers-count">0</span></div>
+    </div>
+
+<!-- Show the answers to vote-->
+
+    <div id="poll-container" class="hidden">
+        <h1>Time to vote</h1>
+        <div id="answers-display">
+
+        </div>
+
+    </div>
+
+    <script type="module" src="app.js"></script>
+
+</body>
+</html>
