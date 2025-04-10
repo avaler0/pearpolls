@@ -3,6 +3,7 @@ import crypto from 'hypercore-crypto'
 import b4a from 'b4a'
 import Hypercore from 'hypercore'
 import Hyperbee from 'hyperbee'
+import path from 'path'
 
 
 const swarm = new Hyperswarm()
@@ -11,7 +12,7 @@ Pear.teardown(() => swarm.destroy())
 
 
 async function createPoll() { // creates the Poll
-  const core = new Hypercore('./cores/writer-storage')
+  const core = new Hypercore(path.join(Pear.config.storage, 'writer-storage'))
   await core.ready()
 
   const info = await core.info()

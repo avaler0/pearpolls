@@ -3,6 +3,8 @@ import crypto from 'hypercore-crypto'
 import b4a from 'b4a'
 import Hypercore from 'hypercore'
 import Hyperbee from 'hyperbee'
+import path from 'path'
+
 
 
 const swarm = new Hyperswarm()
@@ -14,12 +16,13 @@ async function joinPoll(e) {
   const publicKeyString = document.querySelector("#join-poll-topic").value
   const publicKeyBuffer = b4a.from(publicKeyString, 'hex')
 
-  const core = new Hypercore('./cores/reader-storage', publicKeyString)
+  const core = new Hypercore(path.join(Pear.config.storage, 'reader-storage'), publicKeyBuffer)
 
   await core.ready()
   swarm.on('connection', () => console.log('peer connected'))
 
   console.log('joinpoll starts')
+  console.log(core)
   
   console.log(core.length)
   console.log(core.key)
