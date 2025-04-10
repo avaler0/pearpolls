@@ -22,7 +22,7 @@ async function createPoll() { // creates the Poll
   
   swarm.on("connection", (conn) => {
     console.log("New peer connected:", conn.remotePublicKey.toString("hex"))
-    core.replicate(conn);  
+    core.replicate(conn)
   });
   
   swarm.on('update', () => {
