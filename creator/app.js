@@ -22,6 +22,19 @@ async function createPoll() { // creates the Poll
   swarm.on("connection", (conn) => {
     console.log("New peer connected:", conn.remotePublicKey.toString("hex"))
     core.replicate(conn)
+
+    conn.on('data', data => {
+      const str = b4a.toString(data)
+      try {
+        const msg = JSON.parse(str)
+        if (msg.type === 'vote') {
+          console.log('Received vote:', msg)
+          // Store it, count it, display it—up to you
+        }
+      } catch (err) {
+        console.error('Invalid JSON from peer:', str)
+      }
+    })
   });
   
   swarm.on('update', () => {
