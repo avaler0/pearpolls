@@ -4,6 +4,7 @@ import Hypercore from 'hypercore'
 import Hyperbee from 'hyperbee'
 import path from 'path'
 
+let currentConnection = null;
 
 
 const swarm = new Hyperswarm()
@@ -18,7 +19,10 @@ async function joinPoll(e) {
   const core = new Hypercore(path.join(Pear.config.storage, 'reader-storage'), publicKeyString)
 
   await core.ready()
-  swarm.on('connection', conn => core.replicate(conn))
+  swarm.on('connection', conn => {
+    currentConnection = conn
+    core.replicate(conn)
+  })
 
   const info = await core.info()
   console.log(info)
@@ -85,11 +89,29 @@ async function fetchData(core){
   parsed.answers.forEach((answer, index) => { 
     const answerBtn = document.createElement('button');
     answerBtn.textContent = `Answer ${index + 1}: ${answer}`;
+    answerBtn.addEventListener('click', () => {
+      sendAnswer(index, answer);
+    });
     container.appendChild(answerBtn);
   });
   
 }
 
-async function vote(){
+function sendAnswer(index, answerText) {
+  if (!currentConnection) {
+    console.error('No active connection to creator!');
+    return;
+  }
 
+  const payload = {
+    type: 'vote',
+    answerIndex: index,
+    answer: answerText,
+    timestamp: Date.now()
+  }
+
+  const message = b4a.from(JSON.stringify(payload))
+  currentConnection.write(message)
+
+  console.log('Vote sent:', payload)
 }
