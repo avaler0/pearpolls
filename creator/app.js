@@ -18,8 +18,6 @@ async function createPoll() { // creates the Poll
   const info = await core.info()
   console.log(info)
   console.log(`this is the core length: `, core.length)
-  console.log(`this is the core discovery key: `, core.discoveryKey)
-  console.log(`this is the db discovery key in string: `, b4a.toString(core.discoveryKey, 'hex'))
   
   swarm.on("connection", (conn) => {
     console.log("New peer connected:", conn.remotePublicKey.toString("hex"))
@@ -33,10 +31,7 @@ async function createPoll() { // creates the Poll
   document.querySelector("#homepage").classList.add("hidden");
   document.querySelector("#loading").classList.remove("hidden");
 
-  const discovery = swarm.join(core.discoveryKey)
-  discovery.flushed().then(() => {
-    console.log('bee key:', b4a.toString(core.key, 'hex'))
-  })
+  swarm.join(core.discoveryKey)
 
   const coreKeyString = b4a.toString(core.key, 'hex');
   console.log(`this is the core key: `, coreKeyString)

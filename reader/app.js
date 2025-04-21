@@ -1,5 +1,4 @@
 import Hyperswarm from 'hyperswarm'
-import crypto from 'hypercore-crypto'
 import b4a from 'b4a'
 import Hypercore from 'hypercore'
 import Hyperbee from 'hyperbee'
@@ -16,10 +15,13 @@ async function joinPoll(e) {
   const publicKeyString = document.querySelector("#join-poll-topic").value
   const publicKeyBuffer = b4a.from(publicKeyString, 'hex')
 
-  const core = new Hypercore(path.join(Pear.config.storage, 'reader-storage'), publicKeyBuffer)
+  const core = new Hypercore(path.join(Pear.config.storage, 'reader-storage'), publicKeyString)
 
   await core.ready()
-  swarm.on('connection', () => console.log('peer connected'))
+  swarm.on('connection', conn => core.replicate(conn))
+
+  const info = await core.info()
+  console.log(info)
 
   console.log('joinpoll starts')
   console.log(core)
@@ -32,6 +34,7 @@ async function joinPoll(e) {
 
   await db.ready()
 
+  // join a topic
   swarm.join(core.discoveryKey)
 
   await swarm.flush()
@@ -47,9 +50,46 @@ async function joinPoll(e) {
   document.querySelector('#info-container').style.display = "none"
 
   document.querySelector("#loading").classList.add("hidden");
+
+
+  document.getElementById("fetchData").addEventListener("click", () => {;
+    fetchData(core)});
 }
 
 document.getElementById("joinPoll").addEventListener("click", (e) => {
   e.preventDefault();
   joinPoll();
+
 });
+
+async function fetchData(core){
+  const db = new Hyperbee(core, core.key)
+  const entry = await db.get('key1')
+
+  console.log(entry) // this is an object
+  const entryString = b4a.toString(entry.value) // In Hyperbee calling await db.get('key1'), the result is an object with a value property
+  const parsed = JSON.parse(entryString) // Converts JSON string to object
+
+
+  console.log(`this is a the question: ${parsed.question}`)
+  console.log(`this is a the answer 1: ${parsed.answers[1]}`)
+  console.log(`this is a the answer 2: ${parsed.answers[2]}`)
+  console.log(`this is a the answer 3: ${parsed.answers[3]}`)
+
+
+  // Create and add each answer as a button
+  const container = document.getElementById('question-container');     
+
+
+  // Create and add each answer as a button
+  parsed.answers.forEach((answer, index) => { 
+    const answerBtn = document.createElement('button');
+    answerBtn.textContent = `Answer ${index + 1}: ${answer}`;
+    container.appendChild(answerBtn);
+  });
+  
+}
+
+async function vote(){
+
+}
